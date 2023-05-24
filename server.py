@@ -160,8 +160,9 @@ if get_session().token is not None:
         headers = {"Authorization": f"Bearer {get_session().token}", "accept": "application/json"}
 
         files = {"file": (mp3_file.name, mp3_file, "audio/mpeg")}
-        data = {'speaker_names': speaker_names, 'language': language}
-        params = {"no_speaker": no_speaker, 'password': password}
+        data = {'speaker_names': speaker_names, }
+        print(f'Language: {language}')
+        params = {"no_speaker": no_speaker, 'password': password, 'language': language}
         response = requests.post(st.secrets.urls.core, params=params, headers=headers, files=files,
                                  data=data)
 
