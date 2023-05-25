@@ -135,7 +135,7 @@ mp3_file = st.file_uploader('Currently only mp3 as a format is supported')
 
 if get_session().token is not None:
     st.markdown('##### Additional Metadata')
-    language = st.selectbox('In which language was the podcast recorded:', ['English', 'German'])
+    language = st.selectbox('Select the language in which the podcast was recorded', ['English', 'German'])
 
     if language == 'English':
         language = 'en'
@@ -143,7 +143,7 @@ if get_session().token is not None:
         language = 'de'
     # https://github.com/gagan3012/streamlit-tags
     speaker_names = st_tags(
-        label='Enter the names of all Speakers in your Podcast',
+        label='Enter the names of all speakers in your podcast',
         text='Press enter to add more',
         maxtags=9,
     )
