@@ -188,7 +188,7 @@ if get_session().token is not None:
 
 if get_session().token is None:
     # Authenticate the user and exchange the authorization code for an access token
-    st.write("Sing up for our Beta and get three transcriptions for three.")
+    st.write("Sing up for our Beta and get three transcriptions for free.")
     oauth2.render_authentication_btn()
     oauth2.exchange_code_for_access_token(get_session)
 
