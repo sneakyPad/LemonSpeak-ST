@@ -52,7 +52,7 @@ def display_user_information_simple():
     if get_session().token is not None:
         try:
             oauth2.exchange_refresh_token_with_access_token(get_session)
-            st.markdown(f'### Welcome 👋')
+            st.markdown(f'##### Welcome 👋')
             # Display user information with rounded border
             response ={}
             response['name']=''
@@ -116,8 +116,11 @@ podcast_icon = ":studio_microphone:"  # emojis: https://www.webfx.com/tools/emoj
 page_icon = ":rocket:"  # emojis: https://www.webfx.com/tools/emoji-cheat-sheet/
 layout = "centered"
 # ---
-st.title(page_title + " " + lemon_speak_icon + " " + podcast_icon)
-st.markdown(f"### Transcribe and Summarize your Podcast", unsafe_allow_html=True)
+
+st.markdown(f"<h1 style='text-align: center;'>{page_title} 🍋 🎙️</h1>", unsafe_allow_html=True)
+
+st.markdown(f"<h3 style='text-align: center'>Transcribe and Summarize your Podcast</h3>",
+            unsafe_allow_html=True)
 # display_user_information()
 display_user_information_simple()
 st.markdown("""---""")
@@ -145,9 +148,9 @@ if get_session().token is not None:
         maxtags=9,
     )
     no_speaker = len(speaker_names)
-    col1, col2, col3 = st.columns([1, 1, 1])
+    col1, col2, col3 = st.columns([1, 0.77, 1])
     password = col2.text_input("Enter a password", type="password")
-    if col2.button(f"Submit Podcast {page_icon}"):
+    if col2.button(f"Submit your Podcast {page_icon}"):
         if mp3_file is None:
             st.warning('Please upload your file as .mp3', icon='❗️')
             st.stop()
@@ -163,7 +166,10 @@ if get_session().token is not None:
         data = {'speaker_names': speaker_names, }
         print(f'Language: {language}')
         params = {"no_speaker": no_speaker, 'password': password, 'language': language}
-        response = requests.post(st.secrets.urls.core, params=params, headers=headers, files=files,
+
+        with st.spinner('Uploading your podcast ...'):
+
+            response = requests.post(st.secrets.urls.core, params=params, headers=headers, files=files,
                                  data=data)
 
         if response.status_code == 200:
