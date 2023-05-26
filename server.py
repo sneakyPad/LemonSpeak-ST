@@ -148,7 +148,7 @@ if get_session().token is not None:
         maxtags=9,
     )
     no_speaker = len(speaker_names)
-    col1, col2, col3 = st.columns([1, 0.77, 1])
+    col1, col2, col3 = st.columns([1, 0.78, 1])
     password = col2.text_input("Enter a password", type="password")
     if col2.button(f"Submit your Podcast {page_icon}"):
         if mp3_file is None:
