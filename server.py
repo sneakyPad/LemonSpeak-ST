@@ -128,7 +128,8 @@ st.markdown("""---""")
 st.write(
     "Introducing LemonSpeak 🍋, a service crafted specifically for podcasters like you! With LemonSpeak, you can effortlessly upload your podcast 🎙️ and receive a concise summary 📝 and diarized transcription 🗣️. By enhancing your content's SEO value 🔍, LemonSpeak helps you grow your audience 📈 and make your podcast more engaging. "
 )
-
+st.warning('Our service is presently undergoing maintenance. Normal operations will resume shortly. We '
+           'appreciate your patience.', icon="⚠️")
 st.markdown('##### Upload your Podcast')
 mp3_file = st.file_uploader('Currently only mp3 as a format is supported')
 
