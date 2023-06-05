@@ -111,6 +111,15 @@ def fetch_user_info_auth0():
             return response
     raise Exception
 
+def check_health():
+    try:
+        response = requests.get(st.secrets.urls.core_ready)
+        if response.status_code != 200:
+            return False
+        return True
+    except Exception as e:
+        st.error(f"Error occurred: {str(e)}")
+        return False
 
 streamlit_analytics.start_tracking()
 # -------------- SETTINGS --------------
@@ -132,9 +141,15 @@ st.markdown("""---""")
 st.write(
     "Introducing LemonSpeak 🍋, a service crafted specifically for podcasters like you! With LemonSpeak, you can effortlessly upload your podcast 🎙️ and receive a concise summary 📝 and diarized transcription 🗣️. By enhancing your content's SEO value 🔍, LemonSpeak helps you grow your audience 📈 and make your podcast more engaging. "
 )
-st.error('Our service is presently undergoing maintenance. Normal operations will resume shortly. We appreciate your patience.', icon="⚠️")
-st.stop()
-# st.error('Test')
+health = check_health()
+if not health:
+    st.error("The service is currently unavailable due to maintenance. Please try again later.",
+             icon="⚠️")
+    st.stop()
+
+
+# st.error('Our service is presently undergoing maintenance. Normal operations will resume shortly. We appreciate your patience.', icon="⚠️")
+
 st.markdown('##### Upload your Podcast')
 mp3_file = st.file_uploader('Currently only mp3 as a format is supported')
 
