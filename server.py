@@ -154,7 +154,7 @@ if get_session().token is not None:
     )
     no_speaker = len(speaker_names)
     col1, col2, col3 = st.columns([1, 0.78, 1])
-    password = col2.text_input("Enter a password", type="password")
+    # password = col2.text_input("Enter a password", type="password")
     if col2.button(f"Submit your Podcast {page_icon}"):
         if mp3_file is None:
             st.warning('Please upload your file as .mp3', icon='❗️')
@@ -170,7 +170,7 @@ if get_session().token is not None:
         files = {"file": (mp3_file.name, mp3_file, "audio/mpeg")}
         data = {'speaker_names': speaker_names, }
         print(f'Language: {language}')
-        params = {"no_speaker": no_speaker, 'password': password, 'language': language}
+        params = {"no_speaker": no_speaker, 'password': st.secrets.core_auth.pw, 'language': language}
 
         with st.spinner('Uploading your podcast ...'):
 
