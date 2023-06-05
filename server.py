@@ -134,6 +134,7 @@ st.write(
 )
 # st.warning('Our service is presently undergoing maintenance. Normal operations will resume shortly. We '
 #            'appreciate your patience.', icon="⚠️")
+# st.error('Test')
 st.markdown('##### Upload your Podcast')
 mp3_file = st.file_uploader('Currently only mp3 as a format is supported')
 
@@ -180,7 +181,7 @@ if col2.button(f"Submit your Podcast {page_icon}"):
     print(f'Language: {language}')
     params = {"no_speaker": no_speaker, 'password': st.secrets.core_auth.pw, 'language': language, "current_user": email}
 
-    with st.spinner('Uploading your podcast ...'):
+    with st.spinner('Uploading your podcast (this will take a couple of minutes) ...'):
 
         response = requests.post(st.secrets.urls.core, params=params, headers=headers, files=files,
                              data=data)
