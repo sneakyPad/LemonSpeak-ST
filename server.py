@@ -138,65 +138,73 @@ st.markdown('##### Upload your Podcast')
 mp3_file = st.file_uploader('Currently only mp3 as a format is supported')
 
 
-if get_session().token is not None:
-    st.markdown('##### Additional Metadata')
-    language = st.selectbox('Select the language in which the podcast was recorded', ['English', 'German'])
+# if get_session().token is not None:
+st.markdown('##### Additional Metadata')
+language = st.selectbox('Select the language in which the podcast was recorded', ['English', 'German'])
 
-    if language == 'English':
-        language = 'en'
+if language == 'English':
+    language = 'en'
+else:
+    language = 'de'
+# https://github.com/gagan3012/streamlit-tags
+speaker_names = st_tags(
+    label='Enter the names of all speakers in your podcast',
+    text='Press enter to add more',
+    maxtags=9,
+)
+
+email =st.text_input(label='Email Address', placeholder='Please enter your email address to receive '
+                                                        'the results')
+
+no_speaker = len(speaker_names)
+col1, col2, col3 = st.columns([1, 1, 1])
+# password = col2.text_input("Enter a password", type="password")
+if col2.button(f"Submit your Podcast {page_icon}"):
+    if email == '' or not '@' in email:
+        st.warning('Please provide an email address', icon='❗️')
+        st.stop()
+    if mp3_file is None:
+        st.warning('Please upload your file as .mp3', icon='❗️')
+        st.stop()
+    if no_speaker == 0:
+        st.warning('You need to at least specify one speaker.', icon='❗️')
+        st.stop()
+
+    print(f'MP3File: {mp3_file.name}')
+    # headers with auth token
+    # headers = {"Authorization": f"Bearer {get_session().token}", "accept": "application/json"}
+    headers = { "accept": "application/json"}
+
+    files = {"file": (mp3_file.name, mp3_file, "audio/mpeg")}
+    data = {'speaker_names': speaker_names, }
+    print(f'Language: {language}')
+    params = {"no_speaker": no_speaker, 'password': st.secrets.core_auth.pw, 'language': language, "current_user": email}
+
+    with st.spinner('Uploading your podcast ...'):
+
+        response = requests.post(st.secrets.urls.core, params=params, headers=headers, files=files,
+                             data=data)
+
+    if response.status_code == 200:
+        data = response.json()
+        st.success(data['message'], icon="✅")
+        st.balloons()
+        print(data)
     else:
-        language = 'de'
-    # https://github.com/gagan3012/streamlit-tags
-    speaker_names = st_tags(
-        label='Enter the names of all speakers in your podcast',
-        text='Press enter to add more',
-        maxtags=9,
-    )
-    no_speaker = len(speaker_names)
-    col1, col2, col3 = st.columns([1, 0.78, 1])
-    # password = col2.text_input("Enter a password", type="password")
-    if col2.button(f"Submit your Podcast {page_icon}"):
-        if mp3_file is None:
-            st.warning('Please upload your file as .mp3', icon='❗️')
-            st.stop()
-        if no_speaker == 0:
-            st.warning('You need to at least specify one speaker.', icon='❗️')
-            st.stop()
-
-        print(f'MP3File: {mp3_file.name}')
-        # headers with auth token
-        headers = {"Authorization": f"Bearer {get_session().token}", "accept": "application/json"}
-
-        files = {"file": (mp3_file.name, mp3_file, "audio/mpeg")}
-        data = {'speaker_names': speaker_names, }
-        print(f'Language: {language}')
-        params = {"no_speaker": no_speaker, 'password': st.secrets.core_auth.pw, 'language': language}
-
-        with st.spinner('Uploading your podcast ...'):
-
-            response = requests.post(st.secrets.urls.core, params=params, headers=headers, files=files,
-                                 data=data)
-
-        if response.status_code == 200:
-            data = response.json()
-            st.success(data['message'], icon="✅")
-            st.balloons()
-            print(data)
-        else:
-            print(f"Error {response.status_code}: {response.reason}")
-            data = response.json()
-            st.warning(data['message'], icon='❗️')
-            st.snow()
+        print(f"Error {response.status_code}: {response.reason}")
+        data = response.json()
+        st.warning(data['message'], icon='❗️')
+        st.snow()
 
 streamlit_analytics.stop_tracking()
 # st.markdown("""---""")
 # st.write(vars(get_session()))
 
-if get_session().token is None:
-    # Authenticate the user and exchange the authorization code for an access token
-    st.write("Sing up for our Beta and get three transcriptions for free.")
-    oauth2.render_authentication_btn()
-    oauth2.exchange_code_for_access_token(get_session)
+# if get_session().token is None:
+#     # Authenticate the user and exchange the authorization code for an access token
+#     st.write("Sing up for our Beta and get three transcriptions for free.")
+#     oauth2.render_authentication_btn()
+#     oauth2.exchange_code_for_access_token(get_session)
 
 # TODO look at st.experimental_user
 # https://docs.streamlit.io/library/api-reference/personalization/st.experimental_user
