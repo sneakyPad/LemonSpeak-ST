@@ -8,6 +8,9 @@ import oauth2
 import time
 # --- end oauth2
 from streamlit_tags import st_tags
+import streamlit_analytics
+
+streamlit_analytics.track(unsafe_password=st.secrets.tracking.pw)
 
 class SessionState:
     def __init__(self):
@@ -109,6 +112,7 @@ def fetch_user_info_auth0():
     raise Exception
 
 
+streamlit_analytics.start_tracking()
 # -------------- SETTINGS --------------
 page_title = "LemonSpeak "
 lemon_speak_icon = ":lemon:"  # emojis: https://www.webfx.com/tools/emoji-cheat-sheet/
@@ -128,8 +132,8 @@ st.markdown("""---""")
 st.write(
     "Introducing LemonSpeak 🍋, a service crafted specifically for podcasters like you! With LemonSpeak, you can effortlessly upload your podcast 🎙️ and receive a concise summary 📝 and diarized transcription 🗣️. By enhancing your content's SEO value 🔍, LemonSpeak helps you grow your audience 📈 and make your podcast more engaging. "
 )
-st.warning('Our service is presently undergoing maintenance. Normal operations will resume shortly. We '
-           'appreciate your patience.', icon="⚠️")
+# st.warning('Our service is presently undergoing maintenance. Normal operations will resume shortly. We '
+#            'appreciate your patience.', icon="⚠️")
 st.markdown('##### Upload your Podcast')
 mp3_file = st.file_uploader('Currently only mp3 as a format is supported')
 
@@ -184,6 +188,7 @@ if get_session().token is not None:
             st.warning(data['message'], icon='❗️')
             st.snow()
 
+streamlit_analytics.stop_tracking()
 # st.markdown("""---""")
 # st.write(vars(get_session()))
 
