@@ -199,7 +199,7 @@ if col2.button(f"Submit your Podcast {page_icon}"):
     with st.spinner('Uploading your podcast (this will take a couple of minutes) ...'):
 
         response = requests.post(st.secrets.urls.core, params=params, headers=headers, files=files,
-                             data=data)
+                             data=data, timeout=300)
 
     if response.status_code == 200:
         data = response.json()
