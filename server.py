@@ -196,21 +196,25 @@ if col2.button(f"Submit your Podcast {page_icon}"):
     print(f'Language: {language}')
     params = {"no_speaker": no_speaker, 'password': st.secrets.core_auth.pw, 'language': language, "current_user": email}
 
-    with st.spinner('Uploading your podcast (this will take a couple of minutes) ...'):
+    try:
+        with st.spinner('Uploading your podcast (this will take a couple of minutes) ...'):
 
-        response = requests.post(st.secrets.urls.core, params=params, headers=headers, files=files,
-                             data=data, timeout=300)
+            response = requests.post(st.secrets.urls.core, params=params, headers=headers, files=files,
+                                 data=data, timeout=300)
 
-    if response.status_code == 200:
-        data = response.json()
-        st.success(data['message'], icon="✅")
-        st.balloons()
-        print(data)
-    else:
-        print(f"Error {response.status_code}: {response.reason}")
-        data = response.json()
-        st.warning(data['message'], icon='❗️')
-        st.snow()
+        if response.status_code == 200:
+            data = response.json()
+            st.success(data['message'], icon="✅")
+            st.balloons()
+            print(data)
+        else:
+            print(f"Error {response.status_code}: {response.reason}")
+            data = response.json()
+            st.warning(data['message'], icon='❗️')
+            st.snow()
+    except Exception as e:
+        print(f'Response: {response}')
+        print(f'Exception: {e}')
 
 streamlit_analytics.stop_tracking()
 # st.markdown("""---""")
