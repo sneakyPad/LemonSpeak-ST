@@ -151,7 +151,7 @@ if not health:
 # st.error('Our service is presently undergoing maintenance. Normal operations will resume shortly. We appreciate your patience.', icon="⚠️")
 
 st.markdown('##### Upload your Podcast')
-mp3_file = st.file_uploader('Currently only mp3 as a format is supported')
+mp3_file = st.file_uploader('Currently only mp3 as a format is supported', type=["mp3"])
 
 
 # if get_session().token is not None:
@@ -177,13 +177,13 @@ col1, col2, col3 = st.columns([1, 1, 1])
 # password = col2.text_input("Enter a password", type="password")
 if col2.button(f"Submit your Podcast {page_icon}"):
     if email == '' or not '@' in email:
-        st.warning('Please provide an email address', icon='❗️')
+        st.error('Please provide an email address', icon='❗️')
         st.stop()
     if mp3_file is None:
-        st.warning('Please upload your file as .mp3', icon='❗️')
+        st.error('Please upload your file as .mp3', icon='❗️')
         st.stop()
     if no_speaker == 0:
-        st.warning('You need to at least specify one speaker.', icon='❗️')
+        st.error('You need to at least specify one speaker.', icon='❗️')
         st.stop()
 
     print(f'MP3File: {mp3_file.name}')
@@ -200,7 +200,7 @@ if col2.button(f"Submit your Podcast {page_icon}"):
         with st.spinner('Uploading your podcast (this will take a couple of minutes) ...'):
 
             response = requests.post(st.secrets.urls.core, params=params, headers=headers, files=files,
-                                 data=data, timeout=300)
+                                 data=data, timeout=600)
 
         if response.status_code == 200:
             data = response.json()
