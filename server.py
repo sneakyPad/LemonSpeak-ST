@@ -10,7 +10,7 @@ import time
 from streamlit_tags import st_tags
 import streamlit_analytics
 
-streamlit_analytics.track(unsafe_password=st.secrets.tracking.pw)
+streamlit_analytics.track()
 
 class SessionState:
     def __init__(self):
@@ -44,7 +44,7 @@ if "email" not in st.session_state:
 if "page_load_time" not in st.session_state:
     st.session_state.page_load_time = time.time()
 
-st.experimental_set_query_params(code = 'refresh')
+# st.experimental_set_query_params(code = 'refresh')
 
 from io import BytesIO
 from PIL import Image
@@ -216,7 +216,7 @@ if col2.button(f"Submit your Podcast {page_icon}"):
         print(f'Response: {response}')
         print(f'Exception: {e}')
 
-streamlit_analytics.stop_tracking()
+streamlit_analytics.stop_tracking(unsafe_password=st.secrets.tracking.pw)
 # st.markdown("""---""")
 # st.write(vars(get_session()))
 
