@@ -7,8 +7,9 @@ import custom_markdown
 import oauth2
 import time
 # --- end oauth2
-from streamlit_tags import st_tags
+from streamlit_tags import st_tags, st_tags_sidebar
 import streamlit_analytics
+import display
 
 streamlit_analytics.track()
 
@@ -113,7 +114,7 @@ def fetch_user_info_auth0():
 
 def check_health():
     try:
-        response = requests.get(st.secrets.urls.core_ready)
+        response = requests.get(st.secrets.url.core_ready)
         if response.status_code != 200:
             return False
         return True
@@ -140,50 +141,62 @@ st.markdown("""---""")
 
 st.write(
     "Introducing LemonSpeak 🍋, a service crafted specifically for podcasters like you! With LemonSpeak, you can effortlessly upload your podcast 🎙️ and receive a concise summary 📝 and diarized transcription 🗣️. By enhancing your content's SEO value 🔍, LemonSpeak helps you grow your audience 📈 and make your podcast more engaging. "
-)
+    )
+st.write("""##### How it works⚙️\n
+    \n1. Head over to the left sidebar and upload your episode as an MP3 file
+         \n2. Fill in the necessary metadata
+         \n3. Don't forget to tell us the email address where we should send your 
+         results.""", unsafe_allow_html=True)
 health = check_health()
 if not health:
     st.error("The service is currently unavailable due to maintenance. Please try again later.",
              icon="⚠️")
     st.stop()
 
+st.markdown("""---""")
 
 # st.error('Our service is presently undergoing maintenance. Normal operations will resume shortly. We appreciate your patience.', icon="⚠️")
 
-st.markdown('##### Upload your Podcast')
-mp3_file = st.file_uploader('Currently only mp3 as a format is supported', type=["mp3"])
+
+st.sidebar.markdown('### Upload your Episode 🆙')
+mp3_file = st.sidebar.file_uploader('Currently only mp3 as a format is supported', type=["mp3"])
+st.sidebar.divider()
 
 
 # if get_session().token is not None:
-st.markdown('##### Additional Metadata')
-language = st.selectbox('Select the language in which the podcast was recorded', ['English', 'German'])
+st.sidebar.markdown('### Additional Metadata 🤗')
+language = st.sidebar.selectbox('Select the language in which the podcast was recorded', ['English',
+                                                                                     'German'])
+# st.sidebar.markdown("""---""")
 
 if language == 'English':
     language = 'en'
 else:
     language = 'de'
-# https://github.com/gagan3012/streamlit-tags
-speaker_names = st_tags(
-    label='Enter the names of all speakers in your podcast',
+# https://github.com/gagan3012/streamlit-tagsExa
+speaker_names = st_tags_sidebar(
+    label='Enter the names of all speakers in your podcast 👥',
     text='Press enter to add more',
     maxtags=9,
 )
 
-email =st.text_input(label='Email Address', placeholder='Please enter your email address to receive '
-                                                        'the results')
+st.sidebar.divider()
+
+email =st.sidebar.text_input(label='Email Address 💌', placeholder='Please enter your email address to receive the results')
+
 
 no_speaker = len(speaker_names)
-col1, col2, col3 = st.columns([1, 1, 1])
+# col1, col2, col3 = st.columns([1, 1, 1])
 # password = col2.text_input("Enter a password", type="password")
-if col2.button(f"Submit your Podcast {page_icon}"):
+if st.sidebar.button(f"Submit your Podcast {page_icon}"):
     if email == '' or not '@' in email:
-        st.error('Please provide an email address', icon='❗️')
+        st.sidebar.error('Please provide an email address', icon='❗️')
         st.stop()
     if mp3_file is None:
-        st.error('Please upload your file as .mp3', icon='❗️')
+        st.sidebar.error('Please upload your file as .mp3', icon='❗️')
         st.stop()
     if no_speaker == 0:
-        st.error('You need to at least specify one speaker.', icon='❗️')
+        st.sidebar.error('You need to at least specify one speaker.', icon='❗️')
         st.stop()
 
     print(f'MP3File: {mp3_file.name}')
@@ -199,7 +212,7 @@ if col2.button(f"Submit your Podcast {page_icon}"):
     try:
         with st.spinner('Uploading your podcast (this will take a couple of minutes) ...'):
 
-            response = requests.post(st.secrets.urls.core, params=params, headers=headers, files=files,
+            response = requests.post(st.secrets.url.core, params=params, headers=headers, files=files,
                                  data=data, timeout=600)
 
         if response.status_code == 200:
@@ -215,7 +228,11 @@ if col2.button(f"Submit your Podcast {page_icon}"):
     except Exception as e:
         print(f'Response: {response}')
         print(f'Exception: {e}')
+else:
+    display.sample()
 
+display.render_follow_me()
+display.render_subscribe_button()
 streamlit_analytics.stop_tracking(unsafe_password=st.secrets.tracking.pw)
 # st.markdown("""---""")
 # st.write(vars(get_session()))

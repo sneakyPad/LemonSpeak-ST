@@ -12,7 +12,7 @@ client_secret = st.secrets.auth0_credentials.AUTH0_CLIENT_SECRET
 authorization_endpoint = st.secrets.auth0_credentials.AUTH0_DOMAIN
 token_endpoint = st.secrets.auth0_credentials.AUTH0_TOKEN_ENDPOINT
 
-redirect_uri =st.secrets.urls.redirect_url
+redirect_uri =st.secrets.url.redirect_url
 client = WebApplicationClient(client_id)
 
 
