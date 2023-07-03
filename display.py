@@ -37,8 +37,14 @@ def render_follow_me():
         url="https://www.linkedin.com/in/patrick-m-snp/",
         write=False
     )
+    inline_substack = mention(
+        label="Substack",
+        icon="https://camo.githubusercontent.com/3d4121e2061fe8a37e532bc8485e2ef0f8dbfaa26fe0f7e53f755df91d8a4333/68747470733a2f2f737562737461636b2e636f6d2f696d672f737562737461636b2e706e67",
+        url="https://sneakypad.substack.com/",
+        write=False
+    )
     st.divider()
-    st.write(f"For more content follow me or subscribe: {inline_twitter} {inline_linkedin}",
+    st.write(f"For more content follow me or subscribe: {inline_twitter} {inline_linkedin} {inline_substack}",
                      unsafe_allow_html=True, )
 
 def render_subscribe_button():
