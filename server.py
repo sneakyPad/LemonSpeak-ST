@@ -10,6 +10,7 @@ import time
 from streamlit_tags import st_tags, st_tags_sidebar
 import streamlit_analytics
 import display
+import toml2json
 
 streamlit_analytics.track()
 
@@ -51,7 +52,7 @@ from io import BytesIO
 from PIL import Image
 
 def display_user_information_simple():
-    print(f'session_state after rerun: {get_session()}')
+    # print(f'session_state after rerun: {get_session()}')
 
     if get_session().token is not None:
         try:
@@ -121,6 +122,7 @@ def check_health():
     except Exception as e:
         st.error(f"Error occurred: {str(e)}")
         return False
+toml2json.parse_firestore_toml_to_json()
 
 streamlit_analytics.start_tracking()
 # -------------- SETTINGS --------------
@@ -233,7 +235,9 @@ else:
 
 display.render_follow_me()
 display.render_subscribe_button()
-streamlit_analytics.stop_tracking(unsafe_password=st.secrets.tracking.pw)
+streamlit_analytics.stop_tracking(unsafe_password=st.secrets.tracking.pw,
+                                  firestore_key_file=".streamlit/fs_key.json",
+                                  firestore_collection_name="lemonspeak")
 # st.markdown("""---""")
 # st.write(vars(get_session()))
 
