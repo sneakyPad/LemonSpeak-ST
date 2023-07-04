@@ -145,7 +145,7 @@ st.write(
     "Introducing LemonSpeak 🍋, a service crafted specifically for podcasters like you! With LemonSpeak, you can effortlessly upload your podcast 🎙️ and receive a concise summary 📝 and diarized transcription 🗣️. By enhancing your content's SEO value 🔍, LemonSpeak helps you grow your audience 📈 and make your podcast more engaging. "
     )
 st.write("""##### How it works⚙️\n
-    \n1. Head over to the left sidebar and upload your episode as an MP3 file
+    \n1. Head over to the left sidebar ⬅️ and upload your episode as an MP3 file
          \n2. Fill in the necessary metadata
          \n3. Don't forget to tell us the email address where we should send your 
          results.""", unsafe_allow_html=True)
@@ -235,6 +235,9 @@ else:
 
 display.render_follow_me()
 display.render_subscribe_button()
+display.render_more_apps()
+
+
 streamlit_analytics.stop_tracking(unsafe_password=st.secrets.tracking.pw,
                                   firestore_key_file=".streamlit/fs_key.json",
                                   firestore_collection_name="lemonspeak")

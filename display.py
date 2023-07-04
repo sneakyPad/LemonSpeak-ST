@@ -47,6 +47,18 @@ def render_follow_me():
     st.write(f"For more content follow me or subscribe: {inline_twitter} {inline_linkedin} {inline_substack}",
                      unsafe_allow_html=True, )
 
+def render_more_apps():
+    inline_podgrader = mention(
+        label="Podcast Grader - An Audio Quality Grader",
+        icon="🚦",  # Twitter is also featured!
+        url="https://bit.ly/podcast-grader",
+        write=False
+    )
+    st.divider()
+    st.markdown(f'#### Pssst! 🤫', unsafe_allow_html=True)
+    st.write(f"Here are more free apps for you 🥳! {inline_podgrader} ",
+                     unsafe_allow_html=True, )
+
 def render_subscribe_button():
     subscribe_id = 'subscribe'
     button_text = 'Subscribe For More 🎙️💌'
