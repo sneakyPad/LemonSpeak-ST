@@ -12,7 +12,6 @@ import streamlit_analytics
 import display
 import toml2json
 
-streamlit_analytics.track()
 
 class SessionState:
     def __init__(self):
