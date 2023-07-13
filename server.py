@@ -142,7 +142,9 @@ display_user_information_simple()
 st.markdown("""---""")
 
 st.write(
-    "Introducing LemonSpeak 🍋, a service crafted specifically for podcasters like you! With LemonSpeak, you can effortlessly upload your podcast 🎙️ and receive a concise summary 📝 and diarized transcription 🗣️. By enhancing your content's SEO value 🔍, LemonSpeak helps you grow your audience 📈 and make your podcast more engaging. "
+    "With LemonSpeak, you can effortlessly upload your podcast 🎙️, receive a concise summary 📝, and "
+    "diarized transcription 🗣️. By enhancing your content's SEO value 🔍, LemonSpeak helps you grow "
+    "your audience 📈 and makes your podcast more engaging. "
     )
 st.write("""##### How it works⚙️\n
     \n1. Head over to the left sidebar ⬅️ and upload your episode as an MP3 file
@@ -220,7 +222,7 @@ if st.sidebar.button(f"Submit your Podcast {page_icon}"):
         if response.status_code == 200:
             data = response.json()
             st.success(data['message'], icon="✅")
-            st.balloons()
+            # st.balloons()
             print(data)
         else:
             print(f"Error {response.status_code}: {response.reason}")

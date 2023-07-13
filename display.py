@@ -54,9 +54,15 @@ def render_more_apps():
         url="https://bit.ly/podcast-grader",
         write=False
     )
+    inline_titlegrader = mention(
+        label="Title Grader - Improve The Title Of An Episode",
+        icon="✍️",  # Twitter is also featured!
+        url="https://bit.ly/episode-title-grader",
+        write=False
+    )
     st.divider()
     st.markdown(f'#### Pssst! 🤫', unsafe_allow_html=True)
-    st.write(f"Here are more free apps for you 🥳! {inline_podgrader} ",
+    st.write(f"Here are more free apps for you 🥳! {inline_podgrader} {inline_titlegrader}",
                      unsafe_allow_html=True, )
 
 def render_subscribe_button():
