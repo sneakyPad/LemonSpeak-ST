@@ -122,7 +122,9 @@ def check_health():
         st.error(f"Error occurred: {str(e)}")
         return False
 toml2json.parse_firestore_toml_to_json()
-
+streamlit_analytics.track(unsafe_password=st.secrets.tracking.pw,
+                                  firestore_key_file=".streamlit/fs_key.json",
+                                  firestore_collection_name="lemonspeak")
 streamlit_analytics.start_tracking()
 # -------------- SETTINGS --------------
 page_title = "LemonSpeak "
@@ -239,9 +241,7 @@ display.render_subscribe_button()
 display.render_more_apps()
 
 
-streamlit_analytics.stop_tracking(unsafe_password=st.secrets.tracking.pw,
-                                  firestore_key_file=".streamlit/fs_key.json",
-                                  firestore_collection_name="lemonspeak")
+streamlit_analytics.stop_tracking()
 # st.markdown("""---""")
 # st.write(vars(get_session()))
 
