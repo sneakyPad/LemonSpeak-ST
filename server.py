@@ -122,135 +122,135 @@ def check_health():
         st.error(f"Error occurred: {str(e)}")
         return False
 toml2json.parse_firestore_toml_to_json()
-streamlit_analytics.track(unsafe_password=st.secrets.tracking.pw,
+with streamlit_analytics.track(unsafe_password=st.secrets.tracking.pw,
                                   firestore_key_file=".streamlit/fs_key.json",
-                                  firestore_collection_name="lemonspeak")
-streamlit_analytics.start_tracking()
-# -------------- SETTINGS --------------
-page_title = "LemonSpeak "
-lemon_speak_icon = ":lemon:"  # emojis: https://www.webfx.com/tools/emoji-cheat-sheet/
-podcast_icon = ":studio_microphone:"  # emojis: https://www.webfx.com/tools/emoji-cheat-sheet/
-page_icon = ":rocket:"  # emojis: https://www.webfx.com/tools/emoji-cheat-sheet/
-layout = "centered"
-# ---
+                                  firestore_collection_name="lemonspeak"):
+    # streamlit_analytics.start_tracking()
+    # -------------- SETTINGS --------------
+    page_title = "LemonSpeak "
+    lemon_speak_icon = ":lemon:"  # emojis: https://www.webfx.com/tools/emoji-cheat-sheet/
+    podcast_icon = ":studio_microphone:"  # emojis: https://www.webfx.com/tools/emoji-cheat-sheet/
+    page_icon = ":rocket:"  # emojis: https://www.webfx.com/tools/emoji-cheat-sheet/
+    layout = "centered"
+    # ---
 
-st.markdown(f"<h1 style='text-align: center;'>{page_title} 🍋 🎙️</h1>", unsafe_allow_html=True)
+    st.markdown(f"<h1 style='text-align: center;'>{page_title} 🍋 🎙️</h1>", unsafe_allow_html=True)
 
-st.markdown(f"<h3 style='text-align: center'>Transcribe and Summarize your Podcast</h3>",
-            unsafe_allow_html=True)
-# display_user_information()
-display_user_information_simple()
-st.markdown("""---""")
+    st.markdown(f"<h3 style='text-align: center'>Transcribe and Summarize your Podcast</h3>",
+                unsafe_allow_html=True)
+    # display_user_information()
+    display_user_information_simple()
+    st.markdown("""---""")
 
-st.write(
-    "With LemonSpeak, you can effortlessly upload your podcast 🎙️, receive a concise summary 📝, and "
-    "diarized transcription 🗣️. By enhancing your content's SEO value 🔍, LemonSpeak helps you grow "
-    "your audience 📈 and makes your podcast more engaging. "
+    st.write(
+        "With LemonSpeak, you can effortlessly upload your podcast 🎙️, receive a concise summary 📝, and "
+        "diarized transcription 🗣️. By enhancing your content's SEO value 🔍, LemonSpeak helps you grow "
+        "your audience 📈 and makes your podcast more engaging. "
+        )
+    st.write("""##### How it works⚙️\n
+        \n1. Head over to the left sidebar ⬅️ and upload your episode as an MP3 file
+             \n2. Fill in the necessary metadata
+             \n3. Don't forget to tell us the email address where we should send your 
+             results.""", unsafe_allow_html=True)
+    health = check_health()
+    if not health:
+        st.error("The service is currently unavailable due to maintenance. Please try again later.",
+                 icon="⚠️")
+        st.stop()
+
+    st.markdown("""---""")
+
+    # st.error('Our service is presently undergoing maintenance. Normal operations will resume shortly. We appreciate your patience.', icon="⚠️")
+
+
+    st.sidebar.markdown('### Upload your Episode 🆙')
+    mp3_file = st.sidebar.file_uploader('Currently only mp3 as a format is supported', type=["mp3"])
+    st.sidebar.divider()
+
+
+    # if get_session().token is not None:
+    st.sidebar.markdown('### Additional Metadata 🤗')
+    language = st.sidebar.selectbox('Select the language in which the podcast was recorded', ['English',
+                                                                                         'German'])
+    # st.sidebar.markdown("""---""")
+
+    if language == 'English':
+        language = 'en'
+    else:
+        language = 'de'
+    # https://github.com/gagan3012/streamlit-tagsExa
+    speaker_names = st_tags_sidebar(
+        label='Enter the names of all speakers in your podcast 👥',
+        text='Press enter to add more',
+        maxtags=9,
     )
-st.write("""##### How it works⚙️\n
-    \n1. Head over to the left sidebar ⬅️ and upload your episode as an MP3 file
-         \n2. Fill in the necessary metadata
-         \n3. Don't forget to tell us the email address where we should send your 
-         results.""", unsafe_allow_html=True)
-health = check_health()
-if not health:
-    st.error("The service is currently unavailable due to maintenance. Please try again later.",
-             icon="⚠️")
-    st.stop()
 
-st.markdown("""---""")
+    st.sidebar.divider()
 
-# st.error('Our service is presently undergoing maintenance. Normal operations will resume shortly. We appreciate your patience.', icon="⚠️")
+    email =st.sidebar.text_input(label='Email Address 💌', placeholder='Please enter your email address to receive the results')
 
 
-st.sidebar.markdown('### Upload your Episode 🆙')
-mp3_file = st.sidebar.file_uploader('Currently only mp3 as a format is supported', type=["mp3"])
-st.sidebar.divider()
+    no_speaker = len(speaker_names)
+    # col1, col2, col3 = st.columns([1, 1, 1])
+    # password = col2.text_input("Enter a password", type="password")
+    if st.sidebar.button(f"Submit your Podcast {page_icon}"):
+        if email == '' or not '@' in email:
+            st.sidebar.error('Please provide an email address', icon='❗️')
+            st.stop()
+        if mp3_file is None:
+            st.sidebar.error('Please upload your file as .mp3', icon='❗️')
+            st.stop()
+        if no_speaker == 0:
+            st.sidebar.error('You need to at least specify one speaker.', icon='❗️')
+            st.stop()
+
+        print(f'MP3File: {mp3_file.name}')
+        # headers with auth token
+        # headers = {"Authorization": f"Bearer {get_session().token}", "accept": "application/json"}
+        headers = { "accept": "application/json"}
+
+        files = {"file": (mp3_file.name, mp3_file, "audio/mpeg")}
+        data = {'speaker_names': speaker_names, }
+        print(f'Language: {language}')
+        params = {"no_speaker": no_speaker, 'password': st.secrets.core_auth.pw, 'language': language, "current_user": email}
+
+        try:
+            with st.spinner('Uploading your podcast (this will take a couple of minutes) ...'):
+
+                response = requests.post(st.secrets.url.core, params=params, headers=headers, files=files,
+                                     data=data, timeout=600)
+
+            if response.status_code == 200:
+                data = response.json()
+                st.success(data['message'], icon="✅")
+                # st.balloons()
+                print(data)
+            else:
+                print(f"Error {response.status_code}: {response.reason}")
+                data = response.json()
+                st.warning(data['message'], icon='❗️')
+                st.snow()
+        except Exception as e:
+            print(f'Response: {response}')
+            print(f'Exception: {e}')
+    else:
+        display.sample()
+
+    display.render_follow_me()
+    display.render_subscribe_button()
+    display.render_more_apps()
 
 
-# if get_session().token is not None:
-st.sidebar.markdown('### Additional Metadata 🤗')
-language = st.sidebar.selectbox('Select the language in which the podcast was recorded', ['English',
-                                                                                     'German'])
-# st.sidebar.markdown("""---""")
+    # streamlit_analytics.stop_tracking()
+    # st.markdown("""---""")
+    # st.write(vars(get_session()))
 
-if language == 'English':
-    language = 'en'
-else:
-    language = 'de'
-# https://github.com/gagan3012/streamlit-tagsExa
-speaker_names = st_tags_sidebar(
-    label='Enter the names of all speakers in your podcast 👥',
-    text='Press enter to add more',
-    maxtags=9,
-)
+    # if get_session().token is None:
+    #     # Authenticate the user and exchange the authorization code for an access token
+    #     st.write("Sing up for our Beta and get three transcriptions for free.")
+    #     oauth2.render_authentication_btn()
+    #     oauth2.exchange_code_for_access_token(get_session)
 
-st.sidebar.divider()
-
-email =st.sidebar.text_input(label='Email Address 💌', placeholder='Please enter your email address to receive the results')
-
-
-no_speaker = len(speaker_names)
-# col1, col2, col3 = st.columns([1, 1, 1])
-# password = col2.text_input("Enter a password", type="password")
-if st.sidebar.button(f"Submit your Podcast {page_icon}"):
-    if email == '' or not '@' in email:
-        st.sidebar.error('Please provide an email address', icon='❗️')
-        st.stop()
-    if mp3_file is None:
-        st.sidebar.error('Please upload your file as .mp3', icon='❗️')
-        st.stop()
-    if no_speaker == 0:
-        st.sidebar.error('You need to at least specify one speaker.', icon='❗️')
-        st.stop()
-
-    print(f'MP3File: {mp3_file.name}')
-    # headers with auth token
-    # headers = {"Authorization": f"Bearer {get_session().token}", "accept": "application/json"}
-    headers = { "accept": "application/json"}
-
-    files = {"file": (mp3_file.name, mp3_file, "audio/mpeg")}
-    data = {'speaker_names': speaker_names, }
-    print(f'Language: {language}')
-    params = {"no_speaker": no_speaker, 'password': st.secrets.core_auth.pw, 'language': language, "current_user": email}
-
-    try:
-        with st.spinner('Uploading your podcast (this will take a couple of minutes) ...'):
-
-            response = requests.post(st.secrets.url.core, params=params, headers=headers, files=files,
-                                 data=data, timeout=600)
-
-        if response.status_code == 200:
-            data = response.json()
-            st.success(data['message'], icon="✅")
-            # st.balloons()
-            print(data)
-        else:
-            print(f"Error {response.status_code}: {response.reason}")
-            data = response.json()
-            st.warning(data['message'], icon='❗️')
-            st.snow()
-    except Exception as e:
-        print(f'Response: {response}')
-        print(f'Exception: {e}')
-else:
-    display.sample()
-
-display.render_follow_me()
-display.render_subscribe_button()
-display.render_more_apps()
-
-
-streamlit_analytics.stop_tracking()
-# st.markdown("""---""")
-# st.write(vars(get_session()))
-
-# if get_session().token is None:
-#     # Authenticate the user and exchange the authorization code for an access token
-#     st.write("Sing up for our Beta and get three transcriptions for free.")
-#     oauth2.render_authentication_btn()
-#     oauth2.exchange_code_for_access_token(get_session)
-
-# TODO look at st.experimental_user
-# https://docs.streamlit.io/library/api-reference/personalization/st.experimental_user
-# st.experimental_user is a Streamlit command that returns information about the logged-in user on Streamlit Community Cloud. It allows developers to personalize apps for the user viewing the app. In a private Streamlit Community Cloud app, it returns a dictionary with the viewer's email. This value of this field is empty in a public Streamlit Community Cloud app to prevent leaking user emails to developers.
+    # TODO look at st.experimental_user
+    # https://docs.streamlit.io/library/api-reference/personalization/st.experimental_user
+    # st.experimental_user is a Streamlit command that returns information about the logged-in user on Streamlit Community Cloud. It allows developers to personalize apps for the user viewing the app. In a private Streamlit Community Cloud app, it returns a dictionary with the viewer's email. This value of this field is empty in a public Streamlit Community Cloud app to prevent leaking user emails to developers.
